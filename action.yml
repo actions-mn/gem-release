@@ -25,7 +25,7 @@ inputs:
     description: 'Custom command to release gem'
     required: false
     type: string
-    default: '' # gem push --key github --host https://rubygems.pkg.github.com/metanorma pkg/*.gem
+    default: ''
 
 runs:
   using: "composite"
@@ -39,7 +39,7 @@ runs:
       mkdir -p ~/.gem
       envsubst << 'EOF' > ~/.gem/credentials
       ---
-      :${{ inputs.key }}: ${{ inputs.bearer-token ? "Bearer " + inputs.bearer-token : inputs.api-key }}
+      :${{ inputs.key }}: ${{ (inputs.bearer-token && "Bearer " + inputs.bearer-token) || inputs.api-key }}
       EOF
       chmod 0600 ~/.gem/credentials
 
