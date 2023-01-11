@@ -39,7 +39,7 @@ runs:
       mkdir -p ~/.gem
       envsubst << 'EOF' > ~/.gem/credentials
       ---
-      :${{ inputs.key }}: ${{ (inputs.bearer-token && "Bearer " + inputs.bearer-token) || inputs.api-key }}
+      :${{ inputs.key }}: ${{ (inputs.bearer-token && format("Bearer {0}", inputs.bearer-token)) || inputs.api-key }}
       EOF
       chmod 0600 ~/.gem/credentials
 
