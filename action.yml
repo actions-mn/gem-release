@@ -53,9 +53,9 @@ runs:
 
   - shell: bash
     run: |
-      if [ ${{ inputs.release-command }} != "" ]; then
+      if [ '${{ inputs.release-command }}' != "" ]; then
         ${{ inputs.release-command }}
-      elif [ ${{ inputs.bearer-token }} != "" ]; then
+      elif [ "${{ inputs.bearer-token }}" != "" ]; then
         gem push --key ${{ inputs.key }} --host ${{ inputs.host }} ${{ inputs.gem-file }}
       else
         gem push ${{ inputs.gem-file }}
