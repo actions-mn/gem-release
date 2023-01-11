@@ -1,0 +1,38 @@
+name: test
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+
+concurrency:
+  group: '${{ github.workflow }}-${{ github.head_ref || github.ref_name }}'
+  cancel-in-progress: true
+
+jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+
+    - run: |
+        sudo apt-get install yamllint
+        yamllint action.yml
+
+  test-both-key-and-token-provided:
+    name: Test only api-key or token provided
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+
+    - id: test
+      continue-on-error: true
+      uses: ./
+      with:
+        api-key: some-api-key
+        github-pakages-token: some-bearer-token
+
+    - name: action should fail
+      if: steps.test.outcome == 'success'
+      run: exit 1

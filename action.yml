@@ -1,0 +1,54 @@
+name: 'gem-release'
+description: 'Composite action to simplify gem release'
+inputs:
+  host:
+    description: 'host to upload gems'
+    required: false
+    default: 'https://rubygems.org'
+  key:
+    description: 'Key name in credentials YAML config'
+    required: false
+    default: rubygems_api_key
+  gem-file:
+    description: 'Path to .gem file'
+    required: false
+    default: '*.gem'
+  api-key:
+    description: 'Rubygems API key'
+    required: false
+    default: ''
+  bearer-token:
+    description: 'Bearer token as alternative for API key'
+    required: false
+    default: ''
+  release-command:
+    description: 'Custom command to release gem'
+    required: false
+    type: string
+    default: '' # gem push --key github --host https://rubygems.pkg.github.com/metanorma pkg/*.gem
+
+runs:
+  using: "composite"
+  steps:
+  - shell: bash
+    run: |
+      [ ${{ inputs.api-key }} != "" -a ${{ inputs.bearer-token }} != "" ] && echo "api-key and bearer-token cannot be used together" && exit 1
+
+  - shell: bash
+    run: |
+      mkdir -p ~/.gem
+      envsubst << 'EOF' > ~/.gem/credentials
+      ---
+      :${{ inputs.key }}: ${{ inputs.bearer-token ? "Bearer " + inputs.bearer-token : inputs.api-key }}
+      EOF
+      chmod 0600 ~/.gem/credentials
+
+  - shell: bash
+    run: |
+      if [ ${{ inputs.release-command }} != "" ]; then
+        ${{ inputs.release-command }}
+      elif [ ${{ inputs.bearer-token }} != "" ]; then
+        gem push --key ${{ inputs.key }} --host ${{ inputs.host }} ${{ inputs.gem-file }}
+      else
+        gem push ${{ inputs.gem-file }}
+      fi
