@@ -33,8 +33,8 @@ runs:
   - shell: bash
     run: |
       # validation
-      [ ${{ inputs.api-key }} = "" -a ${{ inputs.bearer-token }} = "" ] && echo "Any of api-key or bearer-token must be provided" && exit 1
-      [ ${{ inputs.api-key }} != "" -a ${{ inputs.bearer-token }} != "" ] && echo "Both api-key and bearer-token cannot be used together" && exit 1
+      [ "${{ inputs.api-key }}"  = "" -a "${{ inputs.bearer-token }}"  = "" ] && echo "Any of api-key or bearer-token must be provided" && exit 1
+      [ "${{ inputs.api-key }}" != "" -a "${{ inputs.bearer-token }}" != "" ] && echo "Both api-key and bearer-token cannot be used together" && exit 1
 
   - shell: bash
     run: |

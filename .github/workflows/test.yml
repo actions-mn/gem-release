@@ -38,7 +38,7 @@ jobs:
       run: exit 1
 
   test-api-key-success:
-    name: Test only api-key or token provided
+    name: Test api-key
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
@@ -55,7 +55,7 @@ jobs:
       run: exit 1
 
   test-bearer-token-success:
-    name: Test only api-key or token provided
+    name: Test bearer-token
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
